@@ -1,6 +1,7 @@
 from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
-from airflow.operators.python_operator import PythonOperator
+from airflow.providers.http.operators.http import SimpleHttpOperator
+from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
 from datetime import timedelta
 from airflow.utils.dates import days_ago
 
@@ -22,18 +23,26 @@ dag = DAG(
     description='An example DAG',
 )
 
-def print_hello():
-    return 'Hello Airflow!'
-
 start_task = DummyOperator(
     task_id='start_task',
     dag=dag,
 )
 
-hello_task = PythonOperator(
-    task_id='hello_task',
-    python_callable=print_hello,
-    dag=dag,
+get_api_task = SimpleHttpOperator(
+    task_id='api_request',
+    method='GET',
+    http_conn_id='http_api_con',
+    endpoint='',
+    headers={'Content-Type': 'application/json'},
+    log_response=True,
+    dag=dag
+)
+
+medallion_stage_task = SparkSubmitOperator(
+    task_id='medallion_stage',
+    application='/include/spark_script.py',
+    conn_id='spark_default',
+    dag=dag
 )
 
 end_task = DummyOperator(
@@ -41,4 +50,4 @@ end_task = DummyOperator(
     dag=dag,
 )
 
-start_task >> hello_task >> end_task
+start_task >> get_api_task >> medallion_stage_task >> end_task
