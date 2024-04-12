@@ -10,6 +10,8 @@ RUN apt-get update && \
 # Set JAVA_HOME environment variable
 ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-arm64
 
+RUN export JAVA_HOME
+
 USER airflow
 
 RUN pip install --no-cache-dir apache-airflow apache-airflow-providers-apache-spark pyspark
