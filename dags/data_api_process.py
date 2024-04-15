@@ -41,8 +41,6 @@ get_api_task = SimpleHttpOperator(
 medallion_stage_task = SparkSubmitOperator(
     task_id='medallion_stage',
     application='/opt/airflow/dags/spark_script.py',
-    env_vars={'PATH': '/bin:/usr/bin:/usr/local/bin',
-              'SPARK_HOME' : '/opt/bitnami/spark'},
     conn_id='spark_local',
     dag=dag
 )

@@ -1,18 +1,11 @@
-FROM apache/airflow:slim-latest-python3.8
-
+FROM apache/airflow:2.9.0
 USER root
-
-RUN apt-get update
-
-RUN apt-get install -y openjdk-17-jdk && \
-    apt-get install -y ant && \
-    apt-get clean
-
-# Set JAVA_HOME environment variable
-ENV JAVA_HOME /usr/lib/jvm/java-17-openjdk-arm64
-
-RUN export JAVA_HOME
-
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+         openjdk-17-jre-headless \
+  && apt-get autoremove -yqq --purge \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 USER airflow
-
-RUN pip install --no-cache-dir apache-airflow apache-airflow-providers-apache-spark pyspark psycopg2-binary 
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+RUN pip install --no-cache-dir "apache-airflow==${AIRFLOW_VERSION}" apache-airflow-providers-apache-spark==2.1.3
