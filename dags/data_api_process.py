@@ -14,13 +14,13 @@ default_args = {
     'email_on_retry': False,
     'start_date': days_ago(2),
     'retries': 1,
-    'retry_delay': timedelta(minutes=5),
+    'retry_delay': timedelta(minutes=2),
 }
 
 dag = DAG(
-    'example_dag',
+    'data_api_process',
     default_args=default_args,
-    description='An example DAG',
+    description='Data API Process DAG',
 )
 
 start_task = DummyOperator(
@@ -40,8 +40,8 @@ get_api_task = SimpleHttpOperator(
 
 medallion_stage_task = SparkSubmitOperator(
     task_id='medallion_stage',
-    application='/include/spark_script.py',
-    conn_id='spark_default',
+    application='/opt/airflow/dags/spark_script.py',
+    conn_id='spark_local',
     dag=dag
 )
 

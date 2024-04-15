@@ -1,16 +1,18 @@
 version: '3'
 
 x-spark-common: &spark-common
-  image: bitnami/spark:latest
+  build: 
+    context: ./
+    dockerfile: ./docker/spark/Dockerfile
   volumes:
     - ./jobs:/opt/bitnami/spark/jobs
   networks:
     - airflow-spark
 
 x-airflow-common: &airflow-common
-  build:
-    context: .
-    dockerfile: Dockerfile
+  build: 
+    context: ./
+    dockerfile: ./docker/airflow/Dockerfile
   env_file:
     - airflow.env
   volumes:
