@@ -1,5 +1,6 @@
 import sys, json, os
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import col
 from datetime import datetime
 from pyspark.sql.types import StructType, StringType, StructField
 
@@ -10,9 +11,7 @@ spark = SparkSession \
 
 now = datetime.now()
 
-def bronze_layer(api_data):
-
-    schema = StructType([
+schema = StructType([
         StructField("id", StringType(), True),
         StructField("name", StringType(), True),
         StructField("brewery_type", StringType(), True),
@@ -31,18 +30,23 @@ def bronze_layer(api_data):
         StructField("street", StringType(), True)
     ])
 
+
+def bronze_layer(api_data):
     bronze_df = spark.createDataFrame(api_data, schema)
-    bronze_df.show()
-    bronze_df.write.format('avro').save(f'bronze/bronze_table-{now}')
+    bronze_df.printSchema()
+    bronze_df.write.csv(f'bronze/bronze_table-{now}.csv', header=True, sep=';')
 
 def silver_layer():
-    silver_df = spark.read.format('avro').load(f'bronze/bronze_table-{now}')
-    silver_df.write.patitionBy('state').format('parquet').save(f'silver/silver_table-{now}')
+    silver_df = spark.read.schema(schema).csv(f'bronze/bronze_table-{now}.csv', header=True, sep=';')
+    silver_df.show()
+    silver_df.write.partitionBy('state').format('parquet').save(f'silver/silver_table-{now}')
 
 def gold_layer():
-    gold_df = spark.read.format('parquet').load(f'bronze/silver_table-{now}')
-    gold_df = gold_df.withColumn('qtd_breweries', gold_df.groupBy(['state', 'brewery_type'].count()))
-    gold_df.write.patitionBy('state').format('parquet').save(f'gold/gold_table-{now}')
+    gold_df = spark.read.format('parquet').schema(schema).load(f'silver/silver_table-{now}')
+    gold_df = gold_df.groupBy(['state', 'brewery_type']).count()
+    gold_df.show()
+    gold_df.write.partitionBy('state').format('parquet').save(f'gold/gold_table-{now}')
+    
 
 if __name__ == "__main__":
     input = sys.argv[1]
