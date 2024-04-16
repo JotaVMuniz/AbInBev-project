@@ -24,4 +24,5 @@ Solution: Restart the webserver service and it should work in the next execution
 
 ## Error handling
 Apache Airflow provides robust error handling and monitoring support to ensure the reliability and stability of workflows.
-To configure you email alert
+Logs are stored in a centralized metadata database and can be accessed through the Airflow UI or command-line interface.
+You can also define the number of retries and your email alert in the default_args section located in *data_api_process.py*

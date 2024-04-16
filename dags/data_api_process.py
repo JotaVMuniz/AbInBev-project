@@ -44,7 +44,7 @@ medallion_stage_task = SparkSubmitOperator(
         application='/opt/airflow/dags/spark_script.py',
         conn_id='spark_local',
         application_args=["{{ task_instance.xcom_pull(task_ids='api_request') }}"],
-        packages="org.apache.spark:spark-avro_2.12:3.5.1",
+        packages="org.apache.spark:spark-avro_2.12:3.4.0",
         total_executor_cores=2,
         executor_cores=2,
         executor_memory='1G',
