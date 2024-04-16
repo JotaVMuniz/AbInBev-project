@@ -11,6 +11,7 @@ This is an airflow-spark application with the aim of consuming data from the ope
 
 Our application uses HTTP and Spark connections to receive and transform data. Please follow setup as it shows below:
 ![alt text](https://github.com/JotaVMuniz/AbInBev-project/blob/main/images/spark_config.png)
+Note that the spark host must be the same printed in spark log when starting container.
 
 ![alt text](https://github.com/JotaVMuniz/AbInBev-project/blob/main/images/http_config.png)
 
