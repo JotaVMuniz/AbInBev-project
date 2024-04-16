@@ -13,7 +13,7 @@ default_args = {
     'email': ['your@gmail.com'],
     'email_on_failure': True,
     'email_on_retry': False,
-    'start_date': days_ago(2),
+    'start_date': days_ago(1),
     'retries': 1,
     'retry_delay': timedelta(minutes=2),
 }
