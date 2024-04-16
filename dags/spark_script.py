@@ -1,8 +1,10 @@
-import sys, json
+import sys, json, os
 from pyspark.sql import SparkSession
 from datetime import datetime
 from pyspark.sql.types import StructType, StringType, StructField
 
+os.environ['PYSPARK_PYTHON'] = sys.executable
+os.environ['PYSPARK_DRIVER_PYTHON'] = sys.executable
 
 spark = SparkSession \
     .builder \
