@@ -5,6 +5,7 @@ RUN apt-get update \
          openjdk-17-jre-headless \
   && apt-get autoremove -yqq --purge \
   && apt-get clean \
+  && apt-get install -y procps \
   && rm -rf /var/lib/apt/lists/*
 USER airflow
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
