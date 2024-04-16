@@ -3,9 +3,6 @@ from pyspark.sql import SparkSession
 from datetime import datetime
 from pyspark.sql.types import StructType, StringType, StructField
 
-os.environ['PYSPARK_PYTHON'] = sys.executable
-os.environ['PYSPARK_DRIVER_PYTHON'] = sys.executable
-
 spark = SparkSession \
     .builder \
     .appName("DataProcess") \
@@ -51,3 +48,5 @@ if __name__ == "__main__":
     input = sys.argv[1]
     api_data = json.loads(input)
     bronze_layer(api_data)
+    silver_layer()
+    gold_layer()
